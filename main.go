@@ -11,19 +11,28 @@ import (
 // is processed, it returns an Amazon API Gateway response object to AWS Lambda
 func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
-	index, err := ioutil.ReadFile("public/index.html")
-	if err != nil {
-		return events.APIGatewayProxyResponse{}, err
+	if request.Path == "/index.html" {
+		index, err := ioutil.ReadFile("public/index.html")
+		if err != nil {
+			return events.APIGatewayProxyResponse{}, err
+		}
+
+		return events.APIGatewayProxyResponse{
+			StatusCode: 200,
+			Body:       string(index),
+			Headers: map[string]string{
+				"Content-Type": "text/html",
+			},
+		}, nil
 	}
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       string(index),
+		Body:       "hello",
 		Headers: map[string]string{
 			"Content-Type": "text/html",
 		},
 	}, nil
-
 }
 
 func main() {
